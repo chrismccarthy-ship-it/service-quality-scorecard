@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Service Quality Scorecard</label>
+    <description>Grants access to Service Quality Scorecard components including custom fields and Apex class.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <classAccesses>
+        <apexClass>ServiceQualityScoreParser</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>VoiceCall.Service_Quality_Analysis__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>MessagingSession.Service_Quality_Analysis__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+</PermissionSet>

@@ -1,0 +1,173 @@
+<template>
+    <!-- Loading State -->
+    <template if:true={isLoading}>
+        <div class="loading-container">
+            <lightning-spinner alternative-text="Analyzing transcript..." size="medium"></lightning-spinner>
+            <p class="loading-text">Analyzing service quality...</p>
+        </div>
+    </template>
+
+    <!-- Error State -->
+    <template if:true={errorMessage}>
+        <div class="error-container">
+            <lightning-icon icon-name="utility:error" size="small" variant="error"></lightning-icon>
+            <span class="error-text">{errorMessage}</span>
+        </div>
+    </template>
+
+    <!-- No Data State -->
+    <template if:true={showNoData}>
+        <div class="no-data-container">
+            <lightning-icon icon-name="utility:info" size="large"></lightning-icon>
+            <p class="no-data-text">No service quality analysis available yet.</p>
+            <lightning-button label="Run Analysis" onclick={handleRunAnalysis} variant="brand"></lightning-button>
+        </div>
+    </template>
+
+    <!-- Main Scorecard -->
+    <template if:true={hasData}>
+        <div class="scorecard-wrapper">
+
+            <!-- Header Bar -->
+            <div class="scorecard-header">
+                <div class="header-left">
+                    <h2 class="header-title">Service Quality Scorecard</h2>
+                    <span class={sentimentBadgeClass}>{data.CustomerSentiment}</span>
+                    <span class={outcomeBadgeClass}>{data.CallOutcome}</span>
+                </div>
+                <div class="header-right">
+                    <div class={scoreRingClass}>
+                        <span class="score-value">{totalScore}</span>
+                        <span class="score-max">/100</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="section summary-section">
+                <p class="summary-text">{data.Summary}</p>
+            </div>
+
+            <!-- Score Breakdown -->
+            <div class="section">
+                <h3 class="section-title">
+                    <lightning-icon icon-name="utility:chart" size="x-small"></lightning-icon>
+                    Score Breakdown
+                </h3>
+                <div class="score-bars">
+                    <template for:each={scoreBreakdownItems} for:item="item">
+                        <div key={item.key} class="score-bar-row">
+                            <div class="bar-label-row">
+                                <span class="bar-label">{item.label}</span>
+                                <span class="bar-score">{item.points}/{item.maxPoints}</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class={item.barClass} style={item.barStyle}></div>
+                            </div>
+                            <p class="bar-evidence">{item.evidence}</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Soft Skills -->
+            <div class="section">
+                <h3 class="section-title">
+                    <lightning-icon icon-name="utility:heart" size="x-small"></lightning-icon>
+                    Soft Skills Assessment
+                </h3>
+                <div class="soft-skills-grid">
+                    <template for:each={softSkillItems} for:item="skill">
+                        <div key={skill.key} class="soft-skill-card">
+                            <div class={skill.iconClass}>
+                                <lightning-icon icon-name={skill.icon} size="x-small"></lightning-icon>
+                            </div>
+                            <span class="skill-name">{skill.label}</span>
+                            <span class={skill.ratingClass}>{skill.rating}</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Customer Concerns -->
+            <template if:true={hasConcerns}>
+                <div class="section">
+                    <h3 class="section-title">
+                        <lightning-icon icon-name="utility:warning" size="x-small"></lightning-icon>
+                        Customer Concerns
+                    </h3>
+                    <div class="concerns-list">
+                        <template for:each={data.CustomerConcernsRaised} for:item="concern">
+                            <div key={concern.concern} class="concern-card">
+                                <div class="concern-header">
+                                    <span class={concern.statusClass}>
+                                        <lightning-icon icon-name={concern.statusIcon} size="xx-small"></lightning-icon>
+                                        {concern.statusLabel}
+                                    </span>
+                                </div>
+                                <p class="concern-text">{concern.concern}</p>
+                                <p class="concern-response"><strong>Response:</strong> {concern.repResponse}</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Key Moments -->
+            <template if:true={hasKeyMoments}>
+                <div class="section">
+                    <h3 class="section-title">
+                        <lightning-icon icon-name="utility:pinned" size="x-small"></lightning-icon>
+                        Key Moments
+                    </h3>
+                    <div class="timeline">
+                        <template for:each={data.KeyMoments} for:item="moment">
+                            <div key={moment.description} class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <template if:true={moment.timestamp}>
+                                        <span class="timeline-time">{moment.timestamp}</span>
+                                    </template>
+                                    <p class="timeline-desc">{moment.description}</p>
+                                    <p class="timeline-sig">{moment.significance}</p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Topics & Next Steps -->
+            <div class="section two-col">
+                <div class="col">
+                    <h3 class="section-title">
+                        <lightning-icon icon-name="utility:topic2" size="x-small"></lightning-icon>
+                        Topics Discussed
+                    </h3>
+                    <div class="topic-pills">
+                        <template for:each={topicItems} for:item="topic">
+                            <span key={topic.value} class="topic-pill">{topic.value}</span>
+                        </template>
+                    </div>
+                </div>
+                <div class="col">
+                    <h3 class="section-title">
+                        <lightning-icon icon-name="utility:forward" size="x-small"></lightning-icon>
+                        Recommended Next Steps
+                    </h3>
+                    <p class="next-steps-text">{data.NextSteps}</p>
+                </div>
+            </div>
+
+            <!-- Justification Footer -->
+            <div class="section justification-section">
+                <h3 class="section-title">
+                    <lightning-icon icon-name="utility:note" size="x-small"></lightning-icon>
+                    Score Justification
+                </h3>
+                <p class="justification-text">{scoreJustification}</p>
+            </div>
+
+        </div>
+    </template>
+</template>
