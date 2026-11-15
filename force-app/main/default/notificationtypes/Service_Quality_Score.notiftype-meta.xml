@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>New Service Quality Scorecard Needs Attention</customNotifTypeName>
+    <description>Call score reported below threshold for service quality standards.</description>
+    <desktop>true</desktop>
+    <masterLabel>New Service Quality Scorecard Needs Attention</masterLabel>
+    <mobile>false</mobile>
+    <slack>false</slack>
+</CustomNotificationType>

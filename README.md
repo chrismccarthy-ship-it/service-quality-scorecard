@@ -30,6 +30,10 @@ AI-powered service quality analysis for Salesforce Service Cloud. Automatically 
 | `Service_Quality_Analysis__c` | Custom Field (VoiceCall) | Long Text Area storing the Einstein JSON output |
 | `Service_Quality_Analysis__c` | Custom Field (MessagingSession) | Long Text Area storing the Einstein JSON output |
 | `Service_Quality_Scorecard` | Permission Set | Grants field access and Apex class access |
+| `Call_Quality_Dashboard` | Prompt Template (Flex) | Scores the transcript against the 7 standards and returns the JSON the LWC reads |
+| `*Service Quality Analysis - Voice Call` | Flow | Record-triggered on VoiceCall (CallDisposition = completed) |
+| `*Service Quality Analysis - Messaging Session` | Flow | Record-triggered on MessagingSession update |
+| `Service_Quality_Score`, `Service_Quality_Alert` | Custom Notification Types | Alert types (desktop) |
 
 ## Deployment
 
@@ -51,12 +55,12 @@ sf org assign permset --name Service_Quality_Scorecard
 ## Post-Deploy Setup
 
 1. **Assign the permission set** to all relevant users
-2. **Create the Einstein Prompt Template** in Prompt Builder (see setup guide)
-3. **Create the Custom Notification Type** — Service Quality Alert (Desktop + Mobile)
-4. **Build two Record-Triggered Flows:**
-   - Voice Call flow (triggers on Status = Completed)
-   - Messaging Session flow (triggers on Status = Ended)
-5. **Add the LWC** to Voice Call and Messaging Session record pages via App Builder
+2. **Replace the notification type Id in both flows.** Flows can't reference a notification type by name, so each flow holds the Id from the org it was built in (`0MLg8000001OBZeGAO`, the `Service_Quality_Score` type in sdo1010). Look up the new Id and edit it in both flows:
+   `SELECT Id FROM CustomNotificationType WHERE DeveloperName = 'Service_Quality_Score'`
+3. **Check the prompt template** `Call_Quality_Dashboard` has an active version. It reads transcripts through the Conversation Summary flows `conv_sum_vc__GetTscpForVoiceCall` and `conv_sum_ms__GetTscpForMsgSession`, which must exist in the org.
+4. **Add the LWC** to Voice Call and Messaging Session record pages via App Builder
+
+The alert goes to the owner of the related Case (`VoiceCall.RelatedRecordId`, `MessagingSession.CaseId`), falling back to the record owner when there is no Case. It only fires when the parsed score is above 0.
 
 ## Architecture
 

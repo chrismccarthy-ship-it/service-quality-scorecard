@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>mI6aMlANRIUQf8U19R0uE0Hre/vGj9ytKGI+gNwBuPo=_4</activeVersionIdentifier>
+    <developerName>Call_Quality_Dashboard</developerName>
+    <masterLabel>Call Quality Dashboard</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are a Generative AI assistant analyzing a transcript of a voice call between a service representative and a customer. Your task is to extract structured insights that evaluate how effectively the service rep conducted the conversation according to established service quality standards. Analyze the transcript and output the following in JSON format only:
+
+Service Quality Standards Reference (Use this as your benchmark):
+Build Rapport (10 points) – Start by creating trust, showing empathy, and establishing a friendly, professional tone.
+Active Listening &amp; Needs Identification (20 points) – Listen carefully to the customer&apos;s issue, ask clarifying questions, and confirm understanding before proceeding.
+Explain the Process Clearly (10 points) – Describe the steps being taken to resolve the issue, set realistic expectations on timelines, and keep the customer informed throughout.
+Demonstrate Product/Service Knowledge (15 points) – Provide accurate, relevant information and guide the customer confidently through available options or solutions.
+Handle Concerns &amp; De-escalation (15 points) – Identify and effectively respond to customer frustrations, complaints, or confusion with patience and professionalism.
+Resolution &amp; Problem Solving (20 points) – Drive the interaction toward a clear resolution, workaround, or escalation path that addresses the customer&apos;s need.
+Confirm Next Steps &amp; Follow-Up (10 points) – End with clear confirmation of what was resolved, what happens next, and how the customer will be supported going forward.
+
+Scoring Rules:
+Each standard is scored independently using the following scale relative to its maximum point value:
+&quot;Clearly&quot; = 100% of the available points
+&quot;Partially&quot; = 50% of the available points
+&quot;NotAtAll&quot; = 0% of the available points
+The total RepEffectivenessScore is the sum of all seven weighted scores, producing a final score out of 100.
+If a standard is not applicable to the call (e.g., no concerns were raised so Handle Concerns cannot be evaluated), award full points for that standard and note it as &quot;N/A&quot; in the evidence field.
+
+Here&apos;s the rationale behind the weight distribution:
+1. Build Rapport: Weight - 10%. Rationale: Important but foundational — sets the tone rather than driving resolution
+2. Active Listening &amp; Needs Identification: Weight - 20%. Rationale: Highest tier — misunderstanding the problem derails everything downstream
+3. Explain the Process: Weight - 10%. Rationale: Valuable for transparency, but secondary to actually solving the issue
+Demonstrate Knowledge: Weight - 15%. Rationale: Critical for credibility and delivering accurate guidance
+Handle Concerns &amp; De-escalation: Weight - 20%. Rationale: Highest tier — this is the core reason the customer called
+Confirm Next Steps: Weight - 10%. Rationale: Important for closure and trust, but lower complexity than resolution
+
+
+Your output must contain the following fields:
+{&quot;CustomerSentiment&quot;: &quot;&lt;Positive | Neutral | Negative&gt;&quot;,&quot;CallOutcome&quot;: &quot;&lt;Issue Resolved | Escalation Required | Follow-up Needed | Customer Unresolved | Other&gt;&quot;,&quot;Summary&quot;: &quot;&lt;Brief 2-4 sentence summary of the call&gt;&quot;,&quot;ServiceQualityAlignment&quot;: {&quot;BuildRapport&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description from the transcript&gt;&quot;},&quot;ActiveListeningAndNeedsIdentification&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ExplainProcess&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;DemonstrateKnowledge&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;HandleConcernsAndDeescalation&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ResolutionAndProblemSolving&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ConfirmNextSteps&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;}},&quot;SoftSkillsAssessment&quot;: {&quot;Empathy&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Professionalism&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Clarity&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Patience&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;},&quot;TopicsDiscussed&quot;: [&quot;&lt;Topic1&gt;&quot;, &quot;&lt;Topic2&gt;&quot;, ...],&quot;KeyMoments&quot;: [{&quot;timestamp&quot;: &quot;&lt;HH:MM:SS or null&gt;&quot;,&quot;description&quot;: &quot;&lt;What happened&gt;&quot;,&quot;significance&quot;: &quot;&lt;Why it mattered&gt;&quot;}],&quot;CustomerConcernsRaised&quot;: [{&quot;concern&quot;: &quot;&lt;Customer issue or frustration&gt;&quot;,&quot;addressedEffectively&quot;: &lt;true | false&gt;,&quot;repResponse&quot;: &quot;&lt;How the rep responded&gt;&quot;}],&quot;NextSteps&quot;: &quot;&lt;What the rep should do next based on the call&gt;&quot;,&quot;RepEffectivenessScore&quot;: {&quot;score&quot;: &lt;number out of 100&gt;,&quot;breakdown&quot;: {&quot;BuildRapport&quot;: &lt;points&gt;,&quot;ActiveListeningAndNeedsIdentification&quot;: &lt;points&gt;,&quot;ExplainProcess&quot;: &lt;points&gt;,&quot;DemonstrateKnowledge&quot;: &lt;points&gt;,&quot;HandleConcernsAndDeescalation&quot;: &lt;points&gt;,&quot;ResolutionAndProblemSolving&quot;: &lt;points&gt;,&quot;ConfirmNextSteps&quot;: &lt;points&gt;},&quot;justification&quot;: &quot;&lt;Why you gave this score&gt;&quot;}}
+
+Data:
+Voice Call Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_vc__GetTscpForVoiceCall.Prompt} 
+Messaging Session Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_ms__GetTscpForMsgSession.Prompt}
+
+Important Notes:
+Be concise but informative in all fields.
+Use your understanding of natural conversation to infer emotional tone and intent.
+If any section is not applicable, leave it as an empty array ([]) or null where appropriate.
+Base all evaluation on content within the transcript and avoid speculation.
+You must use the given voice call transcript to perform the requested analysis.
+Return the output in JSON format only. Follow the requested guidelines.
+The RepEffectivenessScore must equal the exact sum of all pointsAwarded values across the seven service quality standards. Double-check this arithmetic before returning the output.
+
+Strict Output Rule --&gt; Return only the final JSON object. Do not include:
+Triple backticks
+Markdown formatting
+Only output a valid JSON object that conforms to the above structure.
+
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Voice_Call</apiName>
+            <definition>SOBJECT://VoiceCall</definition>
+            <masterLabel>Voice Call</masterLabel>
+            <referenceName>Input:Voice_Call</referenceName>
+            <required>false</required>
+        </inputs>
+        <inputs>
+            <apiName>Messaging_Session</apiName>
+            <definition>SOBJECT://MessagingSession</definition>
+            <masterLabel>Messaging Session</masterLabel>
+            <referenceName>Input:Messaging_Session</referenceName>
+            <required>false</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Draft</status>
+        <templateDataProviders>
+            <definition>flow://conv_sum_ms__GetTscpForMsgSession</definition>
+            <description>Gets transcripts for a messaging session sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Messaging Session</label>
+            <parameters>
+                <definition>SOBJECT://MessagingSession</definition>
+                <isRequired>true</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Messaging_Session}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_ms__GetTscpForMsgSession</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>flow://conv_sum_vc__GetTscpForVoiceCall</definition>
+            <description>Gets transcripts for a voice call sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Voice Call</label>
+            <parameters>
+                <definition>SOBJECT://VoiceCall</definition>
+                <isRequired>true</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Voice_Call}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_vc__GetTscpForVoiceCall</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>mI6aMlANRIUQf8U19R0uE0Hre/vGj9ytKGI+gNwBuPo=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a Generative AI assistant analyzing a transcript of a voice call between a service representative and a customer. Your task is to extract structured insights that evaluate how effectively the service rep conducted the conversation according to established service quality standards. Analyze the transcript and output the following in JSON format only:
+
+Service Quality Standards Reference (Use this as your benchmark):
+Build Rapport (10 points) – Start by creating trust, showing empathy, and establishing a friendly, professional tone.
+Active Listening &amp; Needs Identification (20 points) – Listen carefully to the customer&apos;s issue, ask clarifying questions, and confirm understanding before proceeding.
+Explain the Process Clearly (10 points) – Describe the steps being taken to resolve the issue, set realistic expectations on timelines, and keep the customer informed throughout.
+Demonstrate Product/Service Knowledge (15 points) – Provide accurate, relevant information and guide the customer confidently through available options or solutions.
+Handle Concerns &amp; De-escalation (15 points) – Identify and effectively respond to customer frustrations, complaints, or confusion with patience and professionalism.
+Resolution &amp; Problem Solving (20 points) – Drive the interaction toward a clear resolution, workaround, or escalation path that addresses the customer&apos;s need.
+Confirm Next Steps &amp; Follow-Up (10 points) – End with clear confirmation of what was resolved, what happens next, and how the customer will be supported going forward.
+
+Scoring Rules:
+Each standard is scored independently using the following scale relative to its maximum point value:
+&quot;Clearly&quot; = 100% of the available points
+&quot;Partially&quot; = 50% of the available points
+&quot;NotAtAll&quot; = 0% of the available points
+The total RepEffectivenessScore is the sum of all seven weighted scores, producing a final score out of 100.
+If a standard is not applicable to the call (e.g., no concerns were raised so Handle Concerns cannot be evaluated), award full points for that standard and note it as &quot;N/A&quot; in the evidence field.
+
+Here&apos;s the rationale behind the weight distribution:
+1. Build Rapport: Weight - 10%. Rationale: Important but foundational — sets the tone rather than driving resolution
+2. Active Listening &amp; Needs Identification: Weight - 20%. Rationale: Highest tier — misunderstanding the problem derails everything downstream
+3. Explain the Process: Weight - 10%. Rationale: Valuable for transparency, but secondary to actually solving the issue
+4. Demonstrate Knowledge: Weight - 15%. Rationale: Critical for credibility and delivering accurate guidance
+5. Handle Concerns &amp; De-escalation: Weight - 20%. Rationale: Highest tier — this is the core reason the customer called
+6. Confirm Next Steps: Weight - 10%. Rationale: Important for closure and trust, but lower complexity than resolution
+
+
+Your output must contain the following fields:
+{&quot;CustomerSentiment&quot;: &quot;&lt;Positive | Neutral | Negative&gt;&quot;,&quot;CallOutcome&quot;: &quot;&lt;Issue Resolved | Escalation Required | Follow-up Needed | Customer Unresolved | Other&gt;&quot;,&quot;Summary&quot;: &quot;&lt;Brief 2-4 sentence summary of the call&gt;&quot;,&quot;ServiceQualityAlignment&quot;: {&quot;BuildRapport&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description from the transcript&gt;&quot;},&quot;ActiveListeningAndNeedsIdentification&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ExplainProcess&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;DemonstrateKnowledge&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;HandleConcernsAndDeescalation&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ResolutionAndProblemSolving&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ConfirmNextSteps&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Clearly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;}},&quot;SoftSkillsAssessment&quot;: {&quot;Empathy&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Professionalism&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Clarity&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Patience&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;},&quot;TopicsDiscussed&quot;: [&quot;&lt;Topic1&gt;&quot;, &quot;&lt;Topic2&gt;&quot;, ...],&quot;KeyMoments&quot;: [{&quot;timestamp&quot;: &quot;&lt;HH:MM:SS or null&gt;&quot;,&quot;description&quot;: &quot;&lt;What happened&gt;&quot;,&quot;significance&quot;: &quot;&lt;Why it mattered&gt;&quot;}],&quot;CustomerConcernsRaised&quot;: [{&quot;concern&quot;: &quot;&lt;Customer issue or frustration&gt;&quot;,&quot;addressedEffectively&quot;: &lt;true | false&gt;,&quot;repResponse&quot;: &quot;&lt;How the rep responded&gt;&quot;}],&quot;NextSteps&quot;: &quot;&lt;What the rep should do next based on the call&gt;&quot;,&quot;RepEffectivenessScore&quot;: {&quot;score&quot;: &lt;number out of 100&gt;,&quot;breakdown&quot;: {&quot;BuildRapport&quot;: &lt;points&gt;,&quot;ActiveListeningAndNeedsIdentification&quot;: &lt;points&gt;,&quot;ExplainProcess&quot;: &lt;points&gt;,&quot;DemonstrateKnowledge&quot;: &lt;points&gt;,&quot;HandleConcernsAndDeescalation&quot;: &lt;points&gt;,&quot;ResolutionAndProblemSolving&quot;: &lt;points&gt;,&quot;ConfirmNextSteps&quot;: &lt;points&gt;},&quot;justification&quot;: &quot;&lt;Why you gave this score&gt;&quot;}}
+
+Data:
+Voice Call Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_vc__GetTscpForVoiceCall.Prompt} 
+Messaging Session Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_ms__GetTscpForMsgSession.Prompt}
+
+Important Notes:
+1. Be concise but informative in all fields.
+2. Use your understanding of natural conversation to infer emotional tone and intent.
+3. If any section is not applicable, leave it as an empty array ([]) or null where appropriate.
+4. Base all evaluation on content within the transcript and avoid speculation.
+5. You must use the given voice call transcript to perform the requested analysis.
+6. Return the output in JSON format only. Follow the requested guidelines.
+7. The RepEffectivenessScore must equal the exact sum of all pointsAwarded values across the seven service quality standards. Double-check this arithmetic before returning the output.
+
+Strict Output Rule --&gt; Return only the final JSON object. Do not include:
+Triple backticks
+Markdown formatting
+Only output a valid JSON object that conforms to the above structure.
+
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Voice_Call</apiName>
+            <definition>SOBJECT://VoiceCall</definition>
+            <masterLabel>Voice Call</masterLabel>
+            <referenceName>Input:Voice_Call</referenceName>
+            <required>false</required>
+        </inputs>
+        <inputs>
+            <apiName>Messaging_Session</apiName>
+            <definition>SOBJECT://MessagingSession</definition>
+            <masterLabel>Messaging Session</masterLabel>
+            <referenceName>Input:Messaging_Session</referenceName>
+            <required>false</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>flow://conv_sum_vc__GetTscpForVoiceCall</definition>
+            <description>Gets transcripts for a voice call sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Voice Call</label>
+            <parameters>
+                <definition>SOBJECT://VoiceCall</definition>
+                <isRequired>false</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Voice_Call}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_vc__GetTscpForVoiceCall</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>flow://conv_sum_ms__GetTscpForMsgSession</definition>
+            <description>Gets transcripts for a messaging session sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Messaging Session</label>
+            <parameters>
+                <definition>SOBJECT://MessagingSession</definition>
+                <isRequired>false</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Messaging_Session}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_ms__GetTscpForMsgSession</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>mI6aMlANRIUQf8U19R0uE0Hre/vGj9ytKGI+gNwBuPo=_2</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a Generative AI assistant analyzing a transcript of a voice call between a service representative and a customer. Your task is to extract structured insights that evaluate how effectively the service rep conducted the conversation according to established service quality standards. Analyze the transcript and output the following in JSON format only:
+Any entry preceded by &apos;End User:&apos; is something the customer said.
+Any entry preceded by &apos;Agent:&apos; is something the agent said.
+Analyze the conversation according to the criteria described below.
+
+3. Soft Skills
+Did the agent use the customer&apos;s name or use &quot;I&quot; statements?
+Did the agent note details about the customer&apos;s account or their conversation to seek a point of connection?
+Did the agent show empathy if the customer expressed distress?
+
+4. Tone, Language, and Clarity
+Did the agent customize their tone to the customer&apos;s needs?
+Was the agent concise and exact?
+Was the agent easy to understand?
+Did the agent use unfamiliar language, grammar, or stumble over their words multiple times?
+Did the agent use filler words such as &apos;uh&apos; and &apos;um&apos; too frequently?
+
+5. Professional Conduct
+Did the agent use language appropriate for a professional conversation?
+Did the agent curse, yell, or use derogatory statements?
+Did the agent speak over the customer or end the conversation without warning?
+
+
+Service Quality Standards Reference (Use this as your benchmark):
+1. Build Rapport (10 points) – Start by creating trust, showing empathy, and establishing a friendly, professional tone.
+Did the agent use the customer&apos;s name or use &quot;I&quot; statements?
+Did the agent note details about the customer&apos;s account or their conversation to seek a point of connection?
+Did the agent show empathy if the customer expressed distress?
+
+2. Active Listening &amp; Needs Identification (20 points) – Listen carefully to the customer&apos;s issue, ask clarifying questions, and confirm understanding before proceeding.
+Did the agent start with a greeting?
+Did the agent verify the customer&apos;s identity?
+Did the agent adequately address the issue and provide a resolution that was satisfactory to the customer?
+Did the agent customize their tone to the customer&apos;s needs?
+
+3. Explain the Process Clearly (10 points) – Describe the steps being taken to resolve the issue, set realistic expectations on timelines, and keep the customer informed throughout.
+Did the agent use unfamiliar language, grammar, or stumble over their words multiple times?
+Did the agent use filler words such as &apos;uh&apos; and &apos;um&apos; too frequently?
+Was the agent concise and exact?
+Was the agent easy to understand?
+
+4. Demonstrate Product/Service Knowledge (15 points) – Provide accurate, relevant information and guide the customer confidently through available options or solutions.
+
+5. Handle Concerns &amp; De-escalation (15 points) – Identify and effectively respond to customer frustrations, complaints, or confusion with patience and professionalism.
+
+6. Resolution &amp; Problem Solving (20 points) – Drive the interaction toward a clear resolution, workaround, or escalation path that addresses the customer&apos;s need.
+
+7. Confirm Next Steps &amp; Follow-Up (10 points) – End with clear confirmation of what was resolved, what happens next, and how the customer will be supported going forward.
+
+Scoring Rules:
+Each standard is scored independently using the following scale relative to its maximum point value:
+&quot;Perfectly&quot; = 100% of the available points
+&quot;Mostly&quot; = 75% of the available points
+&quot;Partially&quot; = 50% of the available points
+&quot;NotAtAll&quot; = 0% of the available points
+
+The total RepEffectivenessScore is the sum of all seven weighted scores, producing a final score out of 100.
+If a standard is not applicable to the call (e.g., no concerns were raised so Handle Concerns cannot be evaluated), award full points for that standard and note it as &quot;N/A&quot; in the evidence field.
+
+Here&apos;s the rationale behind the weight distribution:
+1. Build Rapport: Weight - 10%. Rationale: Important but foundational — sets the tone rather than driving resolution
+2. Active Listening &amp; Needs Identification: Weight - 20%. Rationale: Highest tier — misunderstanding the problem derails everything downstream
+3. Explain the Process: Weight - 10%. Rationale: Valuable for transparency, but secondary to actually solving the issue
+4. Demonstrate Knowledge: Weight - 15%. Rationale: Critical for credibility and delivering accurate guidance
+5. Handle Concerns &amp; De-escalation: Weight - 20%. Rationale: Highest tier — this is the core reason the customer called
+6. Confirm Next Steps: Weight - 10%. Rationale: Important for closure and trust, but lower complexity than resolution
+
+
+Your output must contain the following fields:
+{&quot;CustomerSentiment&quot;: &quot;&lt;Positive | Neutral | Negative&gt;&quot;,&quot;CallOutcome&quot;: &quot;&lt;Issue Resolved | Escalation Required | Follow-up Needed | Customer Unresolved | Other&gt;&quot;,&quot;Summary&quot;: &quot;&lt;Brief 2-4 sentence summary of the call&gt;&quot;,&quot;ServiceQualityAlignment&quot;: {&quot;BuildRapport&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description from the transcript&gt;&quot;},&quot;ActiveListeningAndNeedsIdentification&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ExplainProcess&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;DemonstrateKnowledge&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;HandleConcernsAndDeescalation&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ResolutionAndProblemSolving&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ConfirmNextSteps&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;}},&quot;SoftSkillsAssessment&quot;: {&quot;Empathy&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Professionalism&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Clarity&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Patience&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;},&quot;TopicsDiscussed&quot;: [&quot;&lt;Topic1&gt;&quot;, &quot;&lt;Topic2&gt;&quot;, ...],&quot;KeyMoments&quot;: [{&quot;timestamp&quot;: &quot;&lt;HH:MM:SS or null&gt;&quot;,&quot;description&quot;: &quot;&lt;What happened&gt;&quot;,&quot;significance&quot;: &quot;&lt;Why it mattered&gt;&quot;}],&quot;CustomerConcernsRaised&quot;: [{&quot;concern&quot;: &quot;&lt;Customer issue or frustration&gt;&quot;,&quot;addressedEffectively&quot;: &lt;true | false&gt;,&quot;repResponse&quot;: &quot;&lt;How the rep responded&gt;&quot;}],&quot;NextSteps&quot;: &quot;&lt;What the rep should do next based on the call&gt;&quot;,&quot;RepEffectivenessScore&quot;: {&quot;score&quot;: &lt;number out of 100&gt;,&quot;breakdown&quot;: {&quot;BuildRapport&quot;: &lt;points&gt;,&quot;ActiveListeningAndNeedsIdentification&quot;: &lt;points&gt;,&quot;ExplainProcess&quot;: &lt;points&gt;,&quot;DemonstrateKnowledge&quot;: &lt;points&gt;,&quot;HandleConcernsAndDeescalation&quot;: &lt;points&gt;,&quot;ResolutionAndProblemSolving&quot;: &lt;points&gt;,&quot;ConfirmNextSteps&quot;: &lt;points&gt;},&quot;justification&quot;: &quot;&lt;Why you gave this score&gt;&quot;}}
+
+Data:
+Voice Call Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_vc__GetTscpForVoiceCall.Prompt} 
+Messaging Session Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_ms__GetTscpForMsgSession.Prompt}
+
+Important Notes:
+1. Be concise but informative in all fields.
+2. Use your understanding of natural conversation to infer emotional tone and intent.
+3. If any section is not applicable, leave it as an empty array ([]) or null where appropriate.
+4. Base all evaluation on content within the transcript and avoid speculation.
+5. You must use the given voice call transcript to perform the requested analysis.
+6. Return the output in JSON format only. Follow the requested guidelines.
+7. The RepEffectivenessScore must equal the exact sum of all pointsAwarded values across the seven service quality standards. Double-check this arithmetic before returning the output.
+
+Strict Output Rule --&gt; Return only the final JSON object. Do not include:
+Triple backticks
+Markdown formatting
+Only output a valid JSON object that conforms to the above structure.
+
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Voice_Call</apiName>
+            <definition>SOBJECT://VoiceCall</definition>
+            <masterLabel>Voice Call</masterLabel>
+            <referenceName>Input:Voice_Call</referenceName>
+            <required>false</required>
+        </inputs>
+        <inputs>
+            <apiName>Messaging_Session</apiName>
+            <definition>SOBJECT://MessagingSession</definition>
+            <masterLabel>Messaging Session</masterLabel>
+            <referenceName>Input:Messaging_Session</referenceName>
+            <required>false</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>flow://conv_sum_vc__GetTscpForVoiceCall</definition>
+            <description>Gets transcripts for a voice call sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Voice Call</label>
+            <parameters>
+                <definition>SOBJECT://VoiceCall</definition>
+                <isRequired>false</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Voice_Call}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_vc__GetTscpForVoiceCall</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>flow://conv_sum_ms__GetTscpForMsgSession</definition>
+            <description>Gets transcripts for a messaging session sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Messaging Session</label>
+            <parameters>
+                <definition>SOBJECT://MessagingSession</definition>
+                <isRequired>false</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Messaging_Session}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_ms__GetTscpForMsgSession</referenceName>
+        </templateDataProviders>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>mI6aMlANRIUQf8U19R0uE0Hre/vGj9ytKGI+gNwBuPo=_3</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a Generative AI assistant analyzing a transcript of a voice call between a service representative and a customer. Your task is to extract structured insights that evaluate how effectively the service rep conducted the conversation according to established service quality standards. Analyze the transcript and output the following in JSON format only:
+Any entry preceded by &apos;End User:&apos; is something the customer said.
+Any entry preceded by &apos;Agent:&apos; is something the agent said.
+Analyze the conversation according to the criteria described below.
+
+Service Quality Standards Reference (Use this as your benchmark):
+1. Build Rapport (10 points) – Start by creating trust, showing empathy, and establishing a friendly, professional tone.
+Did the agent use the customer&apos;s name or use &quot;I&quot; statements?
+Did the agent note details about the customer&apos;s account or their conversation to seek a point of connection?
+Did the agent show empathy if the customer expressed distress?
+
+2. Active Listening &amp; Needs Identification (20 points) – Listen carefully to the customer&apos;s issue, ask clarifying questions, and confirm understanding before proceeding.
+Did the agent start with a greeting?
+Did the agent verify the customer&apos;s identity?
+Did the agent adequately address the issue and provide a resolution that was satisfactory to the customer?
+Did the agent customize their tone to the customer&apos;s needs?
+
+3. Explain the Process Clearly (10 points) – Describe the steps being taken to resolve the issue, set realistic expectations on timelines, and keep the customer informed throughout.
+Did the agent use unfamiliar language, grammar, or stumble over their words multiple times?
+Did the agent use filler words such as &apos;uh&apos; and &apos;um&apos; too frequently?
+Was the agent concise and exact?
+Was the agent easy to understand?
+
+4. Demonstrate Product/Service Knowledge (15 points) – Provide accurate, relevant information and guide the customer confidently through available options or solutions.
+
+5. Handle Concerns &amp; De-escalation (15 points) – Identify and effectively respond to customer frustrations, complaints, or confusion with patience and professionalism.
+
+6. Resolution &amp; Problem Solving (20 points) – Drive the interaction toward a clear resolution, workaround, or escalation path that addresses the customer&apos;s need.
+
+7. Confirm Next Steps &amp; Follow-Up (10 points) – End with clear confirmation of what was resolved, what happens next, and how the customer will be supported going forward.
+
+Scoring Rules:
+Each standard is scored independently using the following scale relative to its maximum point value:
+&quot;Perfectly&quot; = 100% of the available points
+&quot;Mostly&quot; = 75% of the available points
+&quot;Partially&quot; = 50% of the available points
+&quot;NotAtAll&quot; = 0% of the available points
+
+The total RepEffectivenessScore is the sum of all seven weighted scores, producing a final score out of 100.
+If a standard is not applicable to the call (e.g., no concerns were raised so Handle Concerns cannot be evaluated), award full points for that standard and note it as &quot;N/A&quot; in the evidence field.
+
+Here&apos;s the rationale behind the weight distribution:
+1. Build Rapport: Weight - 10%. Rationale: Important but foundational — sets the tone rather than driving resolution
+2. Active Listening &amp; Needs Identification: Weight - 20%. Rationale: Highest tier — misunderstanding the problem derails everything downstream
+3. Explain the Process: Weight - 10%. Rationale: Valuable for transparency, but secondary to actually solving the issue
+4. Demonstrate Knowledge: Weight - 15%. Rationale: Critical for credibility and delivering accurate guidance
+5. Handle Concerns &amp; De-escalation: Weight - 20%. Rationale: Highest tier — this is the core reason the customer called
+6. Confirm Next Steps: Weight - 10%. Rationale: Important for closure and trust, but lower complexity than resolution
+
+
+Your output must contain the following fields:
+{&quot;CustomerSentiment&quot;: &quot;&lt;Positive | Neutral | Negative&gt;&quot;,&quot;CallOutcome&quot;: &quot;&lt;Issue Resolved | Escalation Required | Follow-up Needed | Customer Unresolved | Other&gt;&quot;,&quot;Summary&quot;: &quot;&lt;Brief 2-4 sentence summary of the call&gt;&quot;,&quot;ServiceQualityAlignment&quot;: {&quot;BuildRapport&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description from the transcript&gt;&quot;},&quot;ActiveListeningAndNeedsIdentification&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ExplainProcess&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;DemonstrateKnowledge&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;HandleConcernsAndDeescalation&quot;: {&quot;maxPoints&quot;: 15,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ResolutionAndProblemSolving&quot;: {&quot;maxPoints&quot;: 20,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;},&quot;ConfirmNextSteps&quot;: {&quot;maxPoints&quot;: 10,&quot;status&quot;: &quot;&lt;Perfectly | Mostly | Partially | NotAtAll&gt;&quot;,&quot;pointsAwarded&quot;: &lt;number&gt;,&quot;evidence&quot;: &quot;&lt;Short quote or description&gt;&quot;}},&quot;SoftSkillsAssessment&quot;: {&quot;Empathy&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Professionalism&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Clarity&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;,&quot;Patience&quot;: &quot;&lt;Strong | Adequate | Lacking&gt;&quot;},&quot;TopicsDiscussed&quot;: [&quot;&lt;Topic1&gt;&quot;, &quot;&lt;Topic2&gt;&quot;, ...],&quot;KeyMoments&quot;: [{&quot;timestamp&quot;: &quot;&lt;HH:MM:SS or null&gt;&quot;,&quot;description&quot;: &quot;&lt;What happened&gt;&quot;,&quot;significance&quot;: &quot;&lt;Why it mattered&gt;&quot;}],&quot;CustomerConcernsRaised&quot;: [{&quot;concern&quot;: &quot;&lt;Customer issue or frustration&gt;&quot;,&quot;addressedEffectively&quot;: &lt;true | false&gt;,&quot;repResponse&quot;: &quot;&lt;How the rep responded&gt;&quot;}],&quot;NextSteps&quot;: &quot;&lt;What the rep should do next based on the call&gt;&quot;,&quot;RepEffectivenessScore&quot;: {&quot;score&quot;: &lt;number out of 100&gt;,&quot;breakdown&quot;: {&quot;BuildRapport&quot;: &lt;points&gt;,&quot;ActiveListeningAndNeedsIdentification&quot;: &lt;points&gt;,&quot;ExplainProcess&quot;: &lt;points&gt;,&quot;DemonstrateKnowledge&quot;: &lt;points&gt;,&quot;HandleConcernsAndDeescalation&quot;: &lt;points&gt;,&quot;ResolutionAndProblemSolving&quot;: &lt;points&gt;,&quot;ConfirmNextSteps&quot;: &lt;points&gt;},&quot;justification&quot;: &quot;&lt;Why you gave this score&gt;&quot;}}
+
+Data:
+Voice Call Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_vc__GetTscpForVoiceCall.Prompt} 
+Messaging Session Transcript between the Service Rep and Customer can be found here: {!$Flow:conv_sum_ms__GetTscpForMsgSession.Prompt}
+
+Important Notes:
+1. Be concise but informative in all fields.
+2. Use your understanding of natural conversation to infer emotional tone and intent.
+3. If any section is not applicable, leave it as an empty array ([]) or null where appropriate.
+4. Base all evaluation on content within the transcript and avoid speculation.
+5. You must use the given voice call transcript to perform the requested analysis.
+6. Return the output in JSON format only. Follow the requested guidelines.
+7. The RepEffectivenessScore must equal the exact sum of all pointsAwarded values across the seven service quality standards. Double-check this arithmetic before returning the output.
+
+Strict Output Rule --&gt; Return only the final JSON object. Do not include:
+Triple backticks
+Markdown formatting
+Only output a valid JSON object that conforms to the above structure.
+
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Voice_Call</apiName>
+            <definition>SOBJECT://VoiceCall</definition>
+            <masterLabel>Voice Call</masterLabel>
+            <referenceName>Input:Voice_Call</referenceName>
+            <required>false</required>
+        </inputs>
+        <inputs>
+            <apiName>Messaging_Session</apiName>
+            <definition>SOBJECT://MessagingSession</definition>
+            <masterLabel>Messaging Session</masterLabel>
+            <referenceName>Input:Messaging_Session</referenceName>
+            <required>false</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>flow://conv_sum_vc__GetTscpForVoiceCall</definition>
+            <description>Gets transcripts for a voice call sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Voice Call</label>
+            <parameters>
+                <definition>SOBJECT://VoiceCall</definition>
+                <isRequired>false</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Voice_Call}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_vc__GetTscpForVoiceCall</referenceName>
+        </templateDataProviders>
+        <templateDataProviders>
+            <definition>flow://conv_sum_ms__GetTscpForMsgSession</definition>
+            <description>Gets transcripts for a messaging session sent from an associated prompt template and sends the transcripts to the associated prompt template as prompt instructions.</description>
+            <label>Get Transcripts for a Messaging Session</label>
+            <parameters>
+                <definition>SOBJECT://MessagingSession</definition>
+                <isRequired>false</isRequired>
+                <parameterName>convToSummarize</parameterName>
+                <valueExpression>{!$Input:Messaging_Session}</valueExpression>
+            </parameters>
+            <referenceName>Flow:conv_sum_ms__GetTscpForMsgSession</referenceName>
+        </templateDataProviders>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>mI6aMlANRIUQf8U19R0uE0Hre/vGj9ytKGI+gNwBuPo=_4</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
