@@ -20,7 +20,10 @@
         <div class="no-data-container">
             <lightning-icon icon-name="utility:info" size="large"></lightning-icon>
             <p class="no-data-text">No service quality analysis available yet.</p>
-            <lightning-button label="Run Analysis" onclick={handleRunAnalysis} variant="brand"></lightning-button>
+            <lightning-button label={runButtonLabel} onclick={handleRunAnalysis} variant="brand" disabled={isRunning}></lightning-button>
+            <template if:true={isRunning}>
+                <lightning-spinner alternative-text="Analyzing" size="small"></lightning-spinner>
+            </template>
         </div>
     </template>
 

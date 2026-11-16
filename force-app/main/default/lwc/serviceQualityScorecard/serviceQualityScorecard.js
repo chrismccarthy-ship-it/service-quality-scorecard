@@ -1,5 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue, notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import runAnalysis from '@salesforce/apex/ServiceQualityAnalysisController.runAnalysis';
 
 const FIELDS = ['VoiceCall.Service_Quality_Analysis__c', 'MessagingSession.Service_Quality_Analysis__c'];
 
@@ -9,6 +11,7 @@ export default class ServiceQualityScorecard extends LightningElement {
 
     @track data = null;
     @track isLoading = false;
+    @track isRunning = false;
     @track errorMessage = null;
 
     @wire(getRecord, { recordId: '$recordId', optionalFields: FIELDS })
@@ -34,7 +37,7 @@ export default class ServiceQualityScorecard extends LightningElement {
     }
 
     get showNoData() {
-        return !this.data && !this.isLoading && !this.errorMessage;
+        return !this.data && !this.isLoading;
     }
 
     get hasConcerns() {
@@ -197,12 +200,34 @@ export default class ServiceQualityScorecard extends LightningElement {
         }
     }
 
-    handleRunAnalysis() {
-        this.dispatchEvent(new CustomEvent('runanalysis', {
-            detail: {
-                recordId: this.recordId,
-                objectApiName: this.objectApiName
-            }
-        }));
+    get runButtonLabel() {
+        return this.isRunning ? 'Analyzing...' : 'Run Analysis';
+    }
+
+    async handleRunAnalysis() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.errorMessage = null;
+        try {
+            const result = await runAnalysis({ recordId: this.recordId });
+            this.parseAnalysis(result);
+            await notifyRecordUpdateAvailable([{ recordId: this.recordId }]);
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Analysis complete',
+                message: 'Service quality scorecard generated.',
+                variant: 'success'
+            }));
+        } catch (e) {
+            const message = (e && e.body && e.body.message) || (e && e.message) || 'Unknown error';
+            this.errorMessage = 'Analysis failed: ' + message;
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Analysis failed',
+                message,
+                variant: 'error',
+                mode: 'sticky'
+            }));
+        } finally {
+            this.isRunning = false;
+        }
     }
 }

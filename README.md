@@ -29,6 +29,7 @@ AI-powered service quality analysis for Salesforce Service Cloud. Automatically 
 | `ServiceQualityScoreParser` | Apex Class | Invocable action that extracts the numeric score from JSON for Flow use |
 | `Service_Quality_Analysis__c` | Custom Field (VoiceCall) | Long Text Area storing the Einstein JSON output |
 | `Service_Quality_Analysis__c` | Custom Field (MessagingSession) | Long Text Area storing the Einstein JSON output |
+| `ServiceQualityAnalysisController` | Apex Class | Powers the LWC Run Analysis button: runs `Call_Quality_Dashboard` for the record and saves the JSON |
 | `Service_Quality_Scorecard` | Permission Set | Grants field access and Apex class access |
 | `Call_Quality_Dashboard` | Prompt Template (Flex) | Scores the transcript against the 7 standards and returns the JSON the LWC reads |
 | `*Service Quality Analysis - Voice Call` | Flow | Record-triggered on VoiceCall (CallDisposition = completed) |
